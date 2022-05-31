@@ -1,4 +1,6 @@
 const { spawn } = require("child_process");
+const { Etcd3 } = require('etcd3')
+
 function getHandler(query, res) {
   res.json({ health: !!global.etcd });
 }
@@ -37,6 +39,7 @@ function postHandler(query, res) {
     global.etcd.on("exit", (code) => {
       delete global.etcd;
       delete global.etcdConfig;
+      delete global.etcdClient;
     });
     global.etcd.stdout.on("data", (data) => {
       console.log(`stdout: ${data}`);
@@ -44,6 +47,7 @@ function postHandler(query, res) {
     global.etcd.stderr.on("data", (data) => {
       console.log(`stderr: ${data}`);
     });
+    global.etcdClient = new Etcd3({ hosts: query.peer_url });
     res.json({ health: !!global.etcd });
   } else {
     res.status(401).json({ error: "Alread up" });
@@ -55,6 +59,7 @@ function delHandler(query, res) {
     global.etcd.kill();
     delete global.etcd;
     delete global.etcdConfig;
+    delete global.etcdClient;
     res.json({ success: true });
   } else {
     res.status(401).json({ error: "Alread down" });
