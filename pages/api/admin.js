@@ -1,5 +1,5 @@
 const { spawn } = require("child_process");
-const { Etcd3 } = require('etcd3')
+const { Etcd3 } = require("etcd3");
 
 function getHandler(query, res) {
   res.json({ health: !!global.etcd });
@@ -36,17 +36,19 @@ function postHandler(query, res) {
       query.state,
     ]);
     global.etcdConfig = query;
-    global.etcd.on("exit", (code) => {
-      delete global.etcd;
-      delete global.etcdConfig;
-      delete global.etcdClient;
-    });
-    global.etcd.stdout.on("data", (data) => {
-      console.log(`stdout: ${data}`);
-    });
-    global.etcd.stderr.on("data", (data) => {
-      console.log(`stderr: ${data}`);
-    });
+    if (!process.env.DISABLE_ETCD_LOG) {
+      global.etcd.on("exit", (code) => {
+        delete global.etcd;
+        delete global.etcdConfig;
+        delete global.etcdClient;
+      });
+      global.etcd.stdout.on("data", (data) => {
+        console.log(`stdout: ${data}`);
+      });
+      global.etcd.stderr.on("data", (data) => {
+        console.log(`stderr: ${data}`);
+      });
+    }
     global.etcdClient = new Etcd3({ hosts: query.peer_url });
     res.json({ health: !!global.etcd });
   } else {
