@@ -8,6 +8,9 @@ function getHandler(query, res) {
     )
     .then(({ data }) => {
       res.json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({error: 'Failed', body: err.body})
     });
 }
 
@@ -19,10 +22,14 @@ function postHandler(query, res) {
     )
     .then(({ data }) => {
       res.json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({error: 'Failed', body: err.body})
     });
 }
 
 function delHandler(query, res) {
+  console.log(query.peer_id)
   axios
     .post(
       new URL("/v3/cluster/member/remove", global.etcdConfig.client_url).href,
@@ -30,6 +37,9 @@ function delHandler(query, res) {
     )
     .then(({ data }) => {
       res.json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({error: 'Failed', body: err.body})
     });
 }
 
