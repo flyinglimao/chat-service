@@ -217,7 +217,7 @@ export default function Admin() {
                 .catch(() => setClustAddStatus("Failed"));
             }}
           >
-            Test
+            Add
           </Button>
           <p>Peer Add Status: {clustAddStatus}</p>
         </Box>
@@ -244,7 +244,7 @@ export default function Admin() {
                 .catch(() => setClustRemoveStatus("Failed"));
             }}
           >
-            Test
+            Remove
           </Button>
           <p>Peer Remove Status: {clustRemoveStatus}</p>
         </Box>
